@@ -113,6 +113,7 @@ class CocoroAir:
                     'device_id': self.device_id,
                     'event_key': 'echonet_property',
                     'opc': 'k1+k2+k3',
+                    'epc': '0x80+0x86',
                 }
             )
 
@@ -150,12 +151,23 @@ class CocoroAir:
         
         temperature = int(data['k1']['s1'], 16) if data.get('k1', {}).get('s1') else None
         humidity = int(data['k1']['s2'], 16) if data.get('k1', {}).get('s2') else None
+        cleaned_air_volume = int(data.get('k1', {}).get('s6'), 16) if data.get('k1', {}).get('s6') else None
+        pm25 = int(data.get('k1', {}).get('s7'), 16) if data.get('k1', {}).get('s7') else None
+        odor_level = int(data.get('k2', {}).get('s1'), 16) if data.get('k2', {}).get('s1') else None
+        dust_level = int(data.get('k2', {}).get('s2'), 16) if data.get('k2', {}).get('s2') else None
+        cleanliness_level = int(data.get('k2', {}).get('s4'), 16) if data.get('k2', {}).get('s4') else None
         water_tank = data.get('k2', {}).get('s6') == 'ff' if data.get('k2', {}).get('s6') else None
         humidity_mode = data.get('k3', {}).get('s7') == 'ff' if data.get('k3', {}).get('s7') else None
+        
 
         return {
             'temperature': temperature,
             'humidity': humidity,
+            'cleaned_air_volume': cleaned_air_volume,
+            'pm25': pm25,
+            'odor_level': odor_level,
+            'dust_level': dust_level,
+            'cleanliness_level': cleanliness_level,
             'water_tank': water_tank,
             'humidity_mode': humidity_mode,
         }
