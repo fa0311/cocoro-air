@@ -195,7 +195,7 @@ class CocoroAirOdorLevelSensor(SensorEntity):
             data = self._api.get_sensor_data(raw_data)
             raw_value = data['odor_level']
             if raw_value is not None:
-                self._attr_native_value = min(int(raw_value * 4 / 256), 3)
+                self._attr_native_value = round(raw_value / 33)
             else:
                 self._attr_native_value = None
         except Exception as e:
@@ -224,7 +224,7 @@ class CocoroAirDustLevelSensor(SensorEntity):
             data = self._api.get_sensor_data(raw_data)
             raw_value = data['dust_level']
             if raw_value is not None:
-                self._attr_native_value = min(int(raw_value * 5 / 256), 4)
+                self._attr_native_value = round(raw_value / 25)
             else:
                 self._attr_native_value = None
         except Exception as e:
@@ -253,7 +253,7 @@ class CocoroAirCleanlinessLevelSensor(SensorEntity):
             data = self._api.get_sensor_data(raw_data)
             raw_value = data['cleanliness_level']
             if raw_value is not None:
-                self._attr_native_value = min(int(raw_value * 5 / 256), 4)
+                self._attr_native_value = round(raw_value / 25)
             else:
                 self._attr_native_value = None
         except Exception as e:

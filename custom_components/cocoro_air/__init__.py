@@ -108,7 +108,8 @@ class CocoroAir:
         """Call the API."""
         async with self.client as client:
             res = await client.get(
-                'https://cocoroplusapp.jp.sharp/v1/cocoro-air/objects-conceal/air-cleaner',
+                # 'https://cocoroplusapp.jp.sharp/v1/cocoro-air/objects-conceal/air-cleaner',
+                'https://cocoroplusapp.jp.sharp/v1/cocoro-air/sensors-conceal/air-cleaner',
                 params={
                     'device_id': self.device_id,
                     'event_key': 'echonet_property',
@@ -116,7 +117,6 @@ class CocoroAir:
                     'epc': '0x80+0x86',
                 }
             )
-
             if res.status_code == 401 and not retried:
                 _LOGGER.info('Login again')
                 await self.login()
@@ -129,7 +129,8 @@ class CocoroAir:
 
             response_data = self.cache
             try:
-                data = res.json()['objects_aircleaner_020']['body']['data']
+                # data = res.json()['objects_aircleaner_020']['body']['data']
+                data = res.json()['sensors_aircleaner_021']['body']['data']
                 for item in data:
                     if 'k1' in item:
                         response_data['k1'] = item['k1']
@@ -160,7 +161,7 @@ class CocoroAir:
         humidity_mode = data.get('k3', {}).get('s7') == 'ff' if data.get('k3', {}).get('s7') else None
         
 
-        return {
+        parsed = {
             'temperature': temperature,
             'humidity': humidity,
             'cleaned_air_volume': cleaned_air_volume,
@@ -171,6 +172,8 @@ class CocoroAir:
             'water_tank': water_tank,
             'humidity_mode': humidity_mode,
         }
+        _LOGGER.debug(f'Parsed sensor data: {parsed}')
+        return parsed
 
     async def set_humidity_mode(self, mode, retried=False):
         """Set the humidity mode of the air purifier."""
